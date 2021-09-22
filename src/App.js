@@ -112,6 +112,11 @@ class App extends React.Component {
             sessionData: prevState.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
+            for(let i = 1; i <= 5; i++) {
+                let item = document.getElementById("item-" + i);
+                item.innerHTML = "";
+                item.appendChild(document.createTextNode(newCurrentList.items[i-1]));
+            }
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
@@ -122,6 +127,10 @@ class App extends React.Component {
             sessionData: this.state.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
+            for(let i = 1; i <= 5; i++) {
+                let item = document.getElementById("item-" + i);
+                item.innerHTML = "";
+            }
         });
     }
     deleteList = () => {
@@ -147,7 +156,8 @@ class App extends React.Component {
             <div id="app-root">
                 <Banner 
                     title='Top 5 Lister'
-                    closeCallback={this.closeCurrentList} />
+                    closeCallback={this.closeCurrentList} 
+                />
                 <Sidebar
                     heading='Your Lists'
                     currentList={this.state.currentList}
