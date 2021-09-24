@@ -104,6 +104,7 @@ class App extends React.Component {
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
     }
+
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
         let newCurrentList = this.db.queryGetList(key);
@@ -112,11 +113,7 @@ class App extends React.Component {
             sessionData: prevState.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
-            for(let i = 1; i <= 5; i++) {
-                let item = document.getElementById("item-" + i);
-                item.innerHTML = "";
-                item.appendChild(document.createTextNode(newCurrentList.items[i-1]));
-            }
+            
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
@@ -127,10 +124,7 @@ class App extends React.Component {
             sessionData: this.state.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
-            for(let i = 1; i <= 5; i++) {
-                let item = document.getElementById("item-" + i);
-                item.innerHTML = "";
-            }
+            
         });
     }
     deleteList = () => {
@@ -151,6 +145,7 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
+
     render() {
         return (
             <div id="app-root">

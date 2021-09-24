@@ -23,6 +23,7 @@ export default class ListCard extends React.Component {
             listKey = listKey.substring("list-card-text-".length);
         }
         this.props.loadListCallback(listKey);
+
     }
     handleDeleteList = (event) => {
         event.stopPropagation();
