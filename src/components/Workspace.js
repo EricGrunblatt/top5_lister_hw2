@@ -16,11 +16,11 @@ export default class Workspace extends React.Component {
                             <div className="item-number">5.</div>
                         </div>
                         <div id="edit-items">
-                            <div className="top5-item">{currentList.items[0]}</div>
-                            <div className="top5-item">{currentList.items[1]}</div>
-                            <div className="top5-item">{currentList.items[2]}</div>
-                            <div className="top5-item">{currentList.items[3]}</div>
-                            <div className="top5-item">{currentList.items[4]}</div>
+                            <div id="item-1" className="top5-item" draggable="true">{currentList.items[0]}</div>
+                            <div id="item-2" className="top5-item" draggable="true">{currentList.items[1]}</div>
+                            <div id="item-3" className="top5-item" draggable="true">{currentList.items[2]}</div>
+                            <div id="item-4" className="top5-item" draggable="true">{currentList.items[3]}</div>
+                            <div id="item-5" className="top5-item" draggable="true">{currentList.items[4]}</div>
                         </div>
                     </div>
                 </div>
