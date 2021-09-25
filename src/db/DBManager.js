@@ -2,6 +2,7 @@ export default class DBManager {
     // QUERY AND MUTATION FUNCTIONS GET/SET DATA FROM/TO
     // AN EXTERNAL SOURCE, WHICH FOR THIS APPLICATION
     // MEANS THE BROWSER'S LOCAL STORAGE
+
     queryGetSessionData = () => {
         let sessionDataString = localStorage.getItem("top5-data");
         return JSON.parse(sessionDataString);

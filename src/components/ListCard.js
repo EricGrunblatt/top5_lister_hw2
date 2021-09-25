@@ -42,6 +42,9 @@ export default class ListCard extends React.Component {
             this.handleBlur();
         }
     }
+    handleFocus = (event) => {
+        event.target.select();
+    }
     handleBlur = () => {
         let key = this.props.keyNamePair.key;
         let textValue = this.state.text;
@@ -60,6 +63,7 @@ export default class ListCard extends React.Component {
                     className='list-card'
                     type='text'
                     onKeyPress={this.handleKeyPress}
+                    onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
                     onChange={this.handleUpdate}
                     defaultValue={keyNamePair.name}
