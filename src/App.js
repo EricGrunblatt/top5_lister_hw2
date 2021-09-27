@@ -11,6 +11,7 @@ import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js'
 import ChangeItem_Transaction from './ChangeItem_Transaction';
+import MoveItem_Transaction from './MoveItem_Transaction'
 import jsTPS_Transaction from './jsTPS_Transaction';
 
 class App extends React.Component {
@@ -195,6 +196,11 @@ class App extends React.Component {
         this.tps.addTransaction(transaction);
     }
 
+    addMoveItemTransaction = (oldItemIndex, newItemIndex) => {
+        let transaction = new MoveItem_Transaction(this, oldItemIndex, newItemIndex);
+        this.tps.addTransaction(transaction);
+    }
+
     renameItem = (id, text) => {
         let newList = this.state.currentList;
         newList.items[id] = text;
@@ -212,6 +218,15 @@ class App extends React.Component {
         });
     }
 
+    moveItem = (oldIndex, newIndex) => {
+        let newList = this.state.currentList;
+        newList.items.splice(newIndex, 0, newList.items.splice(oldIndex, 1)[0]);
+        this.setState(prevState => ({
+            currentList : newList
+        }), () => {
+            this.db.mutationUpdateList(this.state.currentList);
+        });
+    }
     
     undo = () => {
         if(this.tps.hasTransactionToUndo()) {
@@ -245,7 +260,8 @@ class App extends React.Component {
                 />
                 <Workspace
                     currentList={this.state.currentList} 
-                    renameItemCallback={this.addChangeItemTransaction} />
+                    renameItemCallback={this.addChangeItemTransaction} 
+                    moveItemCallback={this.addMoveItemTransaction} />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal

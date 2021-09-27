@@ -39,13 +39,30 @@ export default class ItemCard extends React.Component {
         }
         this.handleItemToggleEdit();
     }
+    onDragStart = (event) => {
+        event.dataTransfer.setData("text", event.target.id);
+    }
+    onDragOver = (event) => {
+        event.preventDefault();
+    }
+    onDrop = (event) => {
+        event.preventDefault();
+        let original = event.dataTransfer.getData("text");
+        let originalIndex = parseInt(original.substring(5,6), 10);
+        let newIndex = parseInt(event.target.id.substring(15,16), 10);
+        if(originalIndex !== newIndex) {
+            console.log(originalIndex);
+            console.log(newIndex);
+            this.props.moveItemCallback(originalIndex, newIndex);
+        }
+    }
 
     render() {
-        const { currentList, index } = this.props;
+        const { currentList, index, moveItemCallback } = this.props;
         if (this.state.editActive) {
             return (
                 <input
-                    id={"item-" + index+1}
+                    id={"item-" + index}
                     className='top5-item'
                     type='text'
                     onKeyPress={this.handleItemKeyPress}
@@ -53,15 +70,22 @@ export default class ItemCard extends React.Component {
                     onBlur={this.handleItemBlur}
                     onChange={this.handleItemUpdate}
                     defaultValue={currentList.items[index]}
+                    moveItemCallback={moveItemCallback}
                 />)
         }
+
         return (
+            
             <div
                 id={"item-" + index}
                 onClick={this.handleItemClick}
-                className={'top5-item'}>
+                className={'top5-item '}
+                draggable
+                onDragStart={(e) => this.onDragStart(e)}
+                onDragOver={(e) => this.onDragOver(e, e.target.id)}
+                onDrop={(e) => this.onDrop(e)}>
                 <span
-                    id={"top5-item-text-" + index+1}
+                    id={"top5-item-text-" + index}
                     className="top5-item-text">
                     {currentList.items[index]}
                 </span>
