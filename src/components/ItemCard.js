@@ -44,15 +44,23 @@ export default class ItemCard extends React.Component {
     }
     onDragOver = (event) => {
         event.preventDefault();
+        event.target.className = "top5-item top5-item-dragged-to";
     }
+    onDragLeave = (event) => {
+        event.preventDefault();
+        event.target.className = "top5-item ";
+    }   
     onDrop = (event) => {
         event.preventDefault();
         let original = event.dataTransfer.getData("text");
         let originalIndex = parseInt(original.substring(5,6), 10);
-        let newIndex = parseInt(event.target.id.substring(15,16), 10);
+        let newIndex = parseInt(event.target.id.substring(5,6), 10);
+
+        console.log(originalIndex);
+        console.log(newIndex);
+
+        event.target.className = "top5-item ";
         if(originalIndex !== newIndex) {
-            console.log(originalIndex);
-            console.log(newIndex);
             this.props.moveItemCallback(originalIndex, newIndex);
         }
     }
@@ -73,7 +81,6 @@ export default class ItemCard extends React.Component {
                     moveItemCallback={moveItemCallback}
                 />)
         }
-
         return (
             
             <div
@@ -82,13 +89,10 @@ export default class ItemCard extends React.Component {
                 className={'top5-item '}
                 draggable
                 onDragStart={(e) => this.onDragStart(e)}
-                onDragOver={(e) => this.onDragOver(e, e.target.id)}
-                onDrop={(e) => this.onDrop(e)}>
-                <span
-                    id={"top5-item-text-" + index}
-                    className="top5-item-text">
-                    {currentList.items[index]}
-                </span>
+                onDragOver={(e) => this.onDragOver(e)}
+                onDrop={(e) => this.onDrop(e)}
+                onDragLeave={(e) => this.onDragLeave(e)}>
+                {currentList.items[index]}
             </div>
         );
     }
