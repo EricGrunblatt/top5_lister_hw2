@@ -10,6 +10,8 @@ import Banner from './components/Banner.js'
 import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js'
+import ChangeItem_Transaction from './ChangeItem_Transaction';
+import jsTPS_Transaction from './jsTPS_Transaction';
 
 class App extends React.Component {
     constructor(props) {
@@ -21,6 +23,8 @@ class App extends React.Component {
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
 
+        // INITIALIZE THE TRANSACTION PROCESSING SYSTEM
+        this.tps = new jsTPS_Transaction();
 
         // SETUP THE INITIAL STATE
         this.state = {
@@ -183,7 +187,43 @@ class App extends React.Component {
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
 
-        console.log(this.state.sessionData);
+    }
+
+    addChangeItemTransaction = (id, newText) => {
+        // GET THE CURRENT TEXT
+        let oldText = this.state.currentList.items[id];
+        let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
+        this.tps.addTransaction(transaction);
+    }
+
+    renameItem = (id, text) => {
+        let newList = this.state.currentList;
+        newList.items[id] = text;
+        let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
+        this.setState(prevState => ({
+            currentList : newList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: newKeyNamePairs
+            }
+        }), () => {
+            this.db.mutationUpdateList(this.state.currentList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+        });
+    }
+
+    
+    undo = () => {
+        if(this.tps.hasTransactionToUndo()) {
+            this.tps.undoTransaction();
+        }
+    }
+    
+    redo = () => {
+        if(this.tps.hasTransactionToRedo()) {
+            this.tps.doTransaction();
+        }
     }
 
     render() {
@@ -192,6 +232,8 @@ class App extends React.Component {
                 <Banner 
                     title='Top 5 Lister'
                     closeCallback={this.closeCurrentList} 
+                    undoCallback={this.undo}
+                    redoCallback={this.redo}
                 />
                 <Sidebar
                     heading='Your Lists'
@@ -203,7 +245,8 @@ class App extends React.Component {
                     renameListCallback={this.renameList}
                 />
                 <Workspace
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                    renameItemCallback={this.addChangeItemTransaction} />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
