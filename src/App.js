@@ -130,7 +130,6 @@ class App extends React.Component {
             sessionData: this.state.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
-            this.state.currentList.classList.remove("selected-list-card");
         });
     }
     deleteList = (keyNamePair) => {
