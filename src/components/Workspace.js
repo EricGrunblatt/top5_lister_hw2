@@ -22,7 +22,7 @@ export default class Workspace extends React.Component {
                                 <ItemCard 
                                     index={index}
                                     currentList={currentList}
-                                    key={currentList + "-item-" + index}
+                                    key={currentList + "-" + item +  "-" + index}
                                     renameItemCallback={renameItemCallback}
                                     moveItemCallback={moveItemCallback}
                                 />

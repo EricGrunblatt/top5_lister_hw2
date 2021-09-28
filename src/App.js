@@ -65,6 +65,7 @@ class App extends React.Component {
         // FORCE A CALL TO render, BUT THIS UPDATE IS ASYNCHRONOUS,
         // SO ANY AFTER EFFECTS THAT NEED TO USE THIS UPDATED STATE
         // SHOULD BE DONE VIA ITS CALLBACK
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: newList,
             sessionData: {
@@ -94,7 +95,7 @@ class App extends React.Component {
         if (currentList.key === key) {
             currentList.name = newName;
         }
-
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: prevState.currentList,
             sessionData: {
@@ -114,17 +115,18 @@ class App extends React.Component {
 
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
+        this.tps.clearAllTransactions();
         let newCurrentList = this.db.queryGetList(key);
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
-            
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: null,
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
@@ -222,9 +224,15 @@ class App extends React.Component {
         let newList = this.state.currentList;
         newList.items.splice(newIndex, 0, newList.items.splice(oldIndex, 1)[0]);
         this.setState(prevState => ({
-            currentList : newList
+            currentList : newList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: prevState.sessionData.keyNamePairs
+            }
         }), () => {
             this.db.mutationUpdateList(this.state.currentList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
         });
     }
     
@@ -240,6 +248,8 @@ class App extends React.Component {
         }
     }
 
+    
+
     render() {
         return (
             <div id="app-root">
@@ -248,6 +258,8 @@ class App extends React.Component {
                     closeCallback={this.closeCurrentList} 
                     undoCallback={this.undo}
                     redoCallback={this.redo}
+                    tps={this.tps} 
+                    currentList={this.state.currentList}
                 />
                 <Sidebar
                     heading='Your Lists'
@@ -261,7 +273,8 @@ class App extends React.Component {
                 <Workspace
                     currentList={this.state.currentList} 
                     renameItemCallback={this.addChangeItemTransaction} 
-                    moveItemCallback={this.addMoveItemTransaction} />
+                    moveItemCallback={this.addMoveItemTransaction}
+                />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal

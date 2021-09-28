@@ -5,7 +5,9 @@ export default class ItemCard extends React.Component {
         super(props);
     
         this.state = {
-            text: "",
+            currentList: this.props.currentList,
+            index: this.props.index,
+            text: this.props.currentList.items[this.props.index],
             editActive: false,
         }
     }
@@ -33,9 +35,12 @@ export default class ItemCard extends React.Component {
     }
     handleItemBlur = () => {
         let textValue = this.state.text;
-        let itemIndex = this.props.index;
-        if(textValue !== this.props.currentList.items[itemIndex]) {
+        let itemIndex = this.state.index;
+        if(textValue !== this.state.currentList.items[itemIndex]) {
             this.props.renameItemCallback(itemIndex, textValue);
+        }
+        else if(textValue === "") {
+            this.props.renameItemCallback(itemIndex, "?");
         }
         this.handleItemToggleEdit();
     }
@@ -66,7 +71,7 @@ export default class ItemCard extends React.Component {
     }
 
     render() {
-        const { currentList, index, moveItemCallback } = this.props;
+        const { currentList, index } = this.props;
         if (this.state.editActive) {
             return (
                 <input
@@ -78,11 +83,9 @@ export default class ItemCard extends React.Component {
                     onBlur={this.handleItemBlur}
                     onChange={this.handleItemUpdate}
                     defaultValue={currentList.items[index]}
-                    moveItemCallback={moveItemCallback}
                 />)
         }
         return (
-            
             <div
                 id={"item-" + index}
                 onClick={this.handleItemClick}
