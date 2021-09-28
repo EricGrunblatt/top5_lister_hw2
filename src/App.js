@@ -33,6 +33,7 @@ class App extends React.Component {
             sessionData : loadedSessionData,
             listKeyPair : null
         }
+
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
@@ -248,7 +249,22 @@ class App extends React.Component {
         }
     }
 
-    
+    keydownHandler = (e) => {
+        if(e.keyCode===90 && e.ctrlKey) { 
+            this.undo();
+        }
+        if(e.keyCode===89 && e.ctrlKey) {
+            this.redo();
+        }
+        console.log(e.keyCode);
+    }
+    componentDidMount(){
+        document.addEventListener('keydown',this.keydownHandler);
+    }
+    componentWillUnmount(){
+        document.removeEventListener('keydown',this.keydownHandler);
+    }
+
 
     render() {
         return (
