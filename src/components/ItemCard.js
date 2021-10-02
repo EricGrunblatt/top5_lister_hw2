@@ -36,11 +36,11 @@ export default class ItemCard extends React.Component {
     handleItemBlur = () => {
         let textValue = this.state.text;
         let itemIndex = this.state.index;
-        if(textValue !== this.state.currentList.items[itemIndex]) {
-            this.props.renameItemCallback(itemIndex, textValue);
-        }
-        else if(textValue === "") {
+        if(textValue === "" || textValue === " " || textValue === "  ") {
             this.props.renameItemCallback(itemIndex, "?");
+        }
+        else if(textValue !== this.state.currentList.items[itemIndex]) {
+            this.props.renameItemCallback(itemIndex, textValue);
         }
         this.handleItemToggleEdit();
     }
@@ -60,10 +60,6 @@ export default class ItemCard extends React.Component {
         let original = event.dataTransfer.getData("text");
         let originalIndex = parseInt(original.substring(5,6), 10);
         let newIndex = parseInt(event.target.id.substring(5,6), 10);
-
-        console.log(originalIndex);
-        console.log(newIndex);
-
         event.target.className = "top5-item ";
         if(originalIndex !== newIndex) {
             this.props.moveItemCallback(originalIndex, newIndex);
@@ -75,6 +71,7 @@ export default class ItemCard extends React.Component {
         if (this.state.editActive) {
             return (
                 <input
+                    autoFocus
                     id={"item-" + index}
                     className='top5-item'
                     type='text'

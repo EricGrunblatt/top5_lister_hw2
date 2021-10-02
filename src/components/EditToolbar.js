@@ -9,6 +9,27 @@ export default class EditToolbar extends React.Component {
         }
     }
 
+    keydownHandler = (e) => {
+        console.log(this.props.tps.hasTransactionToRedo());
+        if(e.keyCode===90 && e.ctrlKey) { 
+            this.props.undoCallback();
+        }
+        else if(e.keyCode===89 && e.ctrlKey) {
+            this.props.redoCallback();
+        }
+        this.setState({
+            editActive: false
+        })
+        console.log(this.props.tps.hasTransactionToRedo());
+        this.render();
+    }
+    componentDidMount() {
+        document.addEventListener('keydown', this.keydownHandler);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.keydownHandler);
+    }
+
     render() {
         let buttonUndo = "";
         let buttonRedo = "";
@@ -34,13 +55,15 @@ export default class EditToolbar extends React.Component {
                 <div 
                     id='undo-button' 
                     className={'top5-button' + buttonUndo}
-                    onClick={undoCallback}>
+                    onClick={undoCallback}
+                    onKeyDown={this.onKeyPressed}>
                         &#x21B6;
                 </div>
                 <div
                     id='redo-button'
                     className={'top5-button' + buttonRedo}
-                    onClick={redoCallback}>
+                    onClick={redoCallback}
+                    onKeyDown={this.onKeyPressed}>
                         &#x21B7;
                 </div>
                 <div

@@ -4,8 +4,10 @@ import ListCard from "./ListCard";
 export default class Sidebar extends React.Component {
     render() {
         let buttonAdd = "";
+        let buttonDisable = false;
         if(this.props.currentList !== null) {
             buttonAdd = "-disabled disabled";
+            buttonDisable = true;
         }
 
 
@@ -19,7 +21,8 @@ export default class Sidebar extends React.Component {
         return (
             <div id="top5-sidebar">
                 <div id="sidebar-heading">
-                    <input 
+                    <input
+                        disabled={buttonDisable} 
                         type="button" 
                         id="add-list-button" 
                         onClick={createNewListCallback}

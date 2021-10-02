@@ -78,6 +78,7 @@ class App extends React.Component {
             // PUTTING THIS NEW LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
             this.db.mutationCreateList(newList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
         });
     }
     renameList = (key, newName) => {
@@ -116,8 +117,8 @@ class App extends React.Component {
 
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
-        this.tps.clearAllTransactions();
         let newCurrentList = this.db.queryGetList(key);
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
@@ -177,10 +178,14 @@ class App extends React.Component {
                 index = i;
             }
         }
+        let newList = this.state.currentList;
+        if(this.state.currentList.key === this.state.listKeyPair.key) {
+            newList = null;
+        }
         pairs.splice(index,1);
         this.sortKeyNamePairsByName(pairs);
         this.setState(prevState => ({
-            currentList : this.state.currentList,
+            currentList : newList,
             sessionData: {
                 nextKey: prevState.sessionData.nextKey,
                 counter: prevState.sessionData.counter-1,
@@ -248,23 +253,6 @@ class App extends React.Component {
             this.tps.doTransaction();
         }
     }
-
-    keydownHandler = (e) => {
-        if(e.keyCode===90 && e.ctrlKey) { 
-            this.undo();
-        }
-        if(e.keyCode===89 && e.ctrlKey) {
-            this.redo();
-        }
-        console.log(e.keyCode);
-    }
-    componentDidMount(){
-        document.addEventListener('keydown',this.keydownHandler);
-    }
-    componentWillUnmount(){
-        document.removeEventListener('keydown',this.keydownHandler);
-    }
-
 
     render() {
         return (
